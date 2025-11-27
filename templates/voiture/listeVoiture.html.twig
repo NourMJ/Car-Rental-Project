@@ -1,0 +1,18 @@
+<h1>Liste des voitures</h1>
+<table border="1">
+    <tr>
+        <td>Serie</td>
+        <td>Date Mise en Marche</td>
+        <td>Modele</td>
+    </tr>
+    {% for v in listeVoiture %}
+        <tr>
+            <td>{{ v.serie }}</td>
+            <td>{{ v.dateMiseEnMarche | date}}</td>
+            <td>{{ v.modele }}</td>
+            <td><a href="{{ path("deleteVoiture",{'id':v.id}) }}">Supprimer</a> </td>
+            <td><a href="{{ path("updateVoiture",{'id':v.id}) }}">Update</a> </td>
+
+        </tr>
+    {% endfor %}
+</table>
