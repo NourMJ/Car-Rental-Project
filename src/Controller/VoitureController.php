@@ -14,13 +14,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class VoitureController extends AbstractController
 {
     #[Route('/voitures', name: 'app_voiture')]
-    public function listeVoiture(VoitureRepository $vr): Response
+    public function listeVoiture(Request $request, VoitureRepository $vr): Response
     {
-        $voitures = $vr->findAll();
+        $modeleId = $request->query->getInt('modele', 0) ?: null;
+
+        $voitures = $modeleId
+            ? $vr->findByModele($modeleId)
+            : $vr->findAll();
+
         return $this->render('voiture/listeVoiture.html.twig', [
             'listeVoiture' => $voitures,
         ]);
     }
+
     #[Route('/voiture/add', name: 'app_voiture_add')]
     public function addVoiture(Request $request, EntityManagerInterface $em): Response
     {

@@ -1,18 +1,28 @@
 <h1>Liste des voitures</h1>
+
+<form method="get" action="{{ path('app_voiture') }}">
+    <label for="modele">Filtrer par modèle (ID):</label>
+    <input type="number" name="modele" id="modele" value="{{ app.request.get('modele') }}">
+    <button type="submit">Filtrer</button>
+</form>
+<br>
+
 <table border="1">
     <tr>
         <td>Serie</td>
         <td>Date Mise en Marche</td>
         <td>Modele</td>
+        <td>Actions</td>
     </tr>
     {% for v in listeVoiture %}
         <tr>
             <td>{{ v.serie }}</td>
-            <td>{{ v.dateMiseEnMarche | date}}</td>
-            <td>{{ v.modele }}</td>
-            <td><a href="{{ path("deleteVoiture",{'id':v.id}) }}">Supprimer</a> </td>
-            <td><a href="{{ path("updateVoiture",{'id':v.id}) }}">Update</a> </td>
-
+            <td>{{ v.dateMiseEnMarche | date('Y-m-d') }}</td>
+            <td>{{ v.modele ? v.modele.libelle : '' }}</td>
+            <td>
+                <a href="{{ path('deleteVoiture', {'id': v.id}) }}">Supprimer</a>
+                <a href="{{ path('updateVoiture', {'id': v.id}) }}">Update</a>
+            </td>
         </tr>
     {% endfor %}
 </table>

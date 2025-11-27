@@ -20,6 +20,18 @@ class VoitureRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Voiture::class);
     }
+    public function findByModele(?int $modeleId): array
+    {
+        $qb = $this->createQueryBuilder('v');
+
+        if ($modeleId !== null) {
+            $qb->andWhere('v.modele = :mid')
+                ->setParameter('mid', $modeleId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
 
 //    /**
 //     * @return Voiture[] Returns an array of Voiture objects

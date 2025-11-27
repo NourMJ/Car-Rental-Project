@@ -6,11 +6,7 @@ use App\Repository\VoitureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use App\Entity\Modele;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
@@ -27,19 +23,19 @@ class Voiture
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_mise_en_marche = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $modele = null;
-
     #[ORM\Column]
     private ?int $prix_jour = null;
 
     #[ORM\OneToMany(targetEntity: Location::class, mappedBy: 'voiture')]
     private Collection $locations;
 
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    private ?Modele $modele = null;
 
     public function __construct()
     {
         $this->locations = new ArrayCollection();
+        // $this->modele stays null by default; it is NOT a collection
     }
 
     public function getId(): ?int
@@ -55,7 +51,6 @@ class Voiture
     public function setSerie(int $serie): static
     {
         $this->serie = $serie;
-
         return $this;
     }
 
@@ -67,19 +62,6 @@ class Voiture
     public function setDateMiseEnMarche(\DateTimeInterface $date_mise_en_marche): static
     {
         $this->date_mise_en_marche = $date_mise_en_marche;
-
-        return $this;
-    }
-
-    public function getModele(): ?string
-    {
-        return $this->modele;
-    }
-
-    public function setModele(string $modele): static
-    {
-        $this->modele = $modele;
-
         return $this;
     }
 
@@ -91,7 +73,6 @@ class Voiture
     public function setPrixJour(int $prix_jour): static
     {
         $this->prix_jour = $prix_jour;
-
         return $this;
     }
 
@@ -116,12 +97,22 @@ class Voiture
     public function removeLocation(Location $location): static
     {
         if ($this->locations->removeElement($location)) {
-            // set the owning side to null (unless already changed)
             if ($location->getVoiture() === $this) {
                 $location->setVoiture(null);
             }
         }
 
+        return $this;
+    }
+
+    public function getModele(): ?Modele
+    {
+        return $this->modele;
+    }
+
+    public function setModele(?Modele $modele): static
+    {
+        $this->modele = $modele;
         return $this;
     }
 }
